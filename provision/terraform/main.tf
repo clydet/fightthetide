@@ -6,8 +6,8 @@ terraform {
   }
 }
 
-resource "aws_route53_zone" "primary" {
-  name = "fighttheti.de"
+data "aws_route53_zone" "primary" {
+  name = "fighttheti.de."
 }
 
 module "website" {
@@ -16,7 +16,7 @@ module "website" {
   stage          = "dev"
   name           = "app"
   hostname       = "www.fighttheti.de"
-  parent_zone_id = aws_route53_zone.primary.zone_id
+  parent_zone_id = data.aws_route53_zone.primary.zone_id
 }
 
 resource "null_resource" "remove_and_upload_to_s3" {
@@ -25,6 +25,10 @@ resource "null_resource" "remove_and_upload_to_s3" {
   }
 }
 
-output "meep" {
+output "website" {
   value = module.website
+}
+
+output "debug" {
+  value = data.aws_route53_zone.primary.zone_id
 }
